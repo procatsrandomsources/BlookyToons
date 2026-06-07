@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Reading… | Bookytoons</title>
+  <link rel="stylesheet" href="css/style.css"/>
+  <link rel="stylesheet" href="css/reader.css"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Special+Elite&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+</head>
+<body class="reader-body">
+
+  <!-- Back nav -->
+  <a href="index.html" class="back-btn">← Back to Library</a>
+
+  <!-- Reader wrapper -->
+  <div class="reader-scene">
+
+    <div class="book-title-bar" id="bookTitleBar">Loading…</div>
+
+    <!-- The flip book -->
+    <div class="flipbook-container" id="flipbookContainer">
+      <div class="book-shadow"></div>
+      <div class="flipbook" id="flipbook">
+
+        <!-- Left page -->
+        <div class="page-left" id="pageLeft">
+          <canvas id="canvasLeft"></canvas>
+          <div class="page-number" id="pageNumLeft"></div>
+          <div class="page-crease left-crease"></div>
+        </div>
+
+        <!-- Spine -->
+        <div class="book-spine"></div>
+
+        <!-- Right page -->
+        <div class="page-right" id="pageRight">
+          <canvas id="canvasRight"></canvas>
+          <div class="page-number" id="pageNumRight"></div>
+          <div class="page-crease right-crease"></div>
+
+          <!-- Page turn corner hover target -->
+          <div class="turn-corner" id="turnCorner"></div>
+        </div>
+
+        <!-- Animated flip page (the flying page during turn) -->
+        <div class="flip-page" id="flipPage">
+          <canvas id="canvasFlip" class="flip-canvas-front"></canvas>
+          <canvas id="canvasFlipBack" class="flip-canvas-back"></canvas>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Controls -->
+    <div class="reader-controls">
+      <button class="ctrl-btn" id="btnFirst" title="First page">⏮</button>
+      <button class="ctrl-btn" id="btnPrev" title="Previous">◀</button>
+      <span class="page-indicator" id="pageIndicator">— / —</span>
+      <button class="ctrl-btn" id="btnNext" title="Next">▶</button>
+      <button class="ctrl-btn" id="btnLast" title="Last page">⏭</button>
+    </div>
+
+    <!-- Loading overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+      <div class="loading-spinner"></div>
+      <p class="loading-text">Turning pages…</p>
+    </div>
+
+  </div>
+
+  <script src="js/reader.js"></script>
+</body>
+</html>

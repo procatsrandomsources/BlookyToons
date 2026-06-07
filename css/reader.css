@@ -1,0 +1,359 @@
+/* ============================================
+   BOOKYTOONS — READER / PAGE FLIP STYLES
+   ============================================ */
+
+.reader-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  min-height: 100vh;
+  padding: 4rem 1rem 3rem;
+  overflow-x: hidden;
+}
+
+/* ---- SCENE ---- */
+.reader-scene {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  width: 100%;
+  max-width: 1100px;
+}
+
+.book-title-bar {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  font-style: italic;
+  color: var(--gold-bright);
+  text-align: center;
+  text-shadow: 0 0 20px rgba(201,151,62,0.3);
+  letter-spacing: 0.04em;
+  animation: titleFade 0.8s ease both;
+}
+
+/* ---- FLIPBOOK CONTAINER ---- */
+.flipbook-container {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  perspective: 2000px;
+}
+
+.book-shadow {
+  position: absolute;
+  bottom: -24px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80%;
+  height: 30px;
+  background: radial-gradient(ellipse, rgba(0,0,0,0.6) 0%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ---- THE BOOK ---- */
+.flipbook {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  border-radius: 2px 6px 6px 2px;
+  box-shadow:
+    -4px 0 8px rgba(0,0,0,0.5),
+    0 8px 40px rgba(0,0,0,0.8),
+    0 0 0 1px rgba(0,0,0,0.3);
+  background: #3d200e;
+  z-index: 1;
+  /* Dynamic size set by JS */
+  width: var(--book-width, 800px);
+  height: var(--book-height, 560px);
+}
+
+/* ---- PAGES ---- */
+.page-left,
+.page-right {
+  position: relative;
+  flex: 1;
+  overflow: hidden;
+  background: var(--cream);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.page-left {
+  border-radius: 2px 0 0 2px;
+  background:
+    linear-gradient(90deg, #ede0c4 0%, var(--cream) 100%);
+  box-shadow: inset -4px 0 12px rgba(0,0,0,0.15);
+}
+
+.page-right {
+  border-radius: 0 4px 4px 0;
+  background:
+    linear-gradient(270deg, #ede0c4 0%, var(--cream) 100%);
+  box-shadow: inset 4px 0 12px rgba(0,0,0,0.1);
+}
+
+.page-left canvas,
+.page-right canvas {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+/* Page texture overlay */
+.page-left::after,
+.page-right::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  opacity: 0.5;
+  mix-blend-mode: multiply;
+}
+
+/* Page crease shadow */
+.page-crease {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 30px;
+  pointer-events: none;
+  z-index: 2;
+}
+.left-crease {
+  right: 0;
+  background: linear-gradient(90deg, transparent, rgba(0,0,0,0.08));
+}
+.right-crease {
+  left: 0;
+  background: linear-gradient(270deg, transparent, rgba(0,0,0,0.08));
+}
+
+/* Page numbers */
+.page-number {
+  position: absolute;
+  bottom: 10px;
+  font-family: var(--font-type);
+  font-size: 0.7rem;
+  color: #7a6040;
+  opacity: 0.7;
+  z-index: 3;
+}
+.page-left .page-number  { left: 14px; }
+.page-right .page-number { right: 14px; }
+
+/* ---- BOOK SPINE ---- */
+.book-spine {
+  width: 20px;
+  flex-shrink: 0;
+  background:
+    linear-gradient(90deg,
+      #2a1006 0%,
+      #5c3317 25%,
+      #7a4520 50%,
+      #5c3317 75%,
+      #2a1006 100%);
+  box-shadow:
+    inset 2px 0 4px rgba(255,180,60,0.08),
+    inset -2px 0 4px rgba(0,0,0,0.3);
+  position: relative;
+  z-index: 10;
+}
+
+/* ---- PAGE TURN CORNER ---- */
+.turn-corner {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 60px;
+  height: 60px;
+  cursor: pointer;
+  z-index: 20;
+}
+.turn-corner::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 0 0 36px 36px;
+  border-color: transparent transparent rgba(201,151,62,0.25) transparent;
+  transition: border-width 0.2s ease;
+}
+.turn-corner:hover::before {
+  border-width: 0 0 52px 52px;
+  border-color: transparent transparent rgba(201,151,62,0.4) transparent;
+}
+
+/* ---- FLIP PAGE (animated) ---- */
+.flip-page {
+  position: absolute;
+  top: 0;
+  left: 50%;           /* starts at center spine */
+  width: 50%;
+  height: 100%;
+  transform-origin: left center;
+  transform-style: preserve-3d;
+  pointer-events: none;
+  z-index: 15;
+  display: none;       /* shown by JS during flip */
+}
+
+.flip-canvas-front,
+.flip-canvas-back {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  background: var(--cream);
+}
+.flip-canvas-back {
+  transform: rotateY(180deg);
+  background: linear-gradient(90deg, #ede0c4 0%, var(--cream) 100%);
+}
+
+/* ---- PAGE FLIP ANIMATION ---- */
+@keyframes flipForward {
+  0%   { transform: rotateY(0deg); }
+  100% { transform: rotateY(-180deg); }
+}
+@keyframes flipBackward {
+  0%   { transform: rotateY(-180deg); }
+  100% { transform: rotateY(0deg); }
+}
+.flipping-forward {
+  animation: flipForward 0.55s cubic-bezier(0.45, 0, 0.55, 1) forwards;
+}
+.flipping-backward {
+  animation: flipBackward 0.55s cubic-bezier(0.45, 0, 0.55, 1) forwards;
+}
+
+/* Flip shadow overlay on left page */
+.flip-page::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg,
+    rgba(0,0,0,0.2) 0%,
+    transparent 40%,
+    transparent 60%,
+    rgba(0,0,0,0.15) 100%
+  );
+  pointer-events: none;
+}
+
+/* ---- CONTROLS ---- */
+.reader-controls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: rgba(26,15,0,0.8);
+  border: 1px solid rgba(201,151,62,0.25);
+  border-radius: 4px;
+  padding: 0.6rem 1.5rem;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+}
+
+.ctrl-btn {
+  background: transparent;
+  border: 1px solid rgba(201,151,62,0.3);
+  color: var(--gold);
+  width: 36px;
+  height: 36px;
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+}
+.ctrl-btn:hover {
+  background: rgba(201,151,62,0.15);
+  border-color: var(--gold);
+  color: var(--gold-bright);
+}
+.ctrl-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.page-indicator {
+  font-family: var(--font-type);
+  font-size: 0.85rem;
+  color: var(--gold);
+  min-width: 80px;
+  text-align: center;
+  letter-spacing: 0.1em;
+}
+
+/* ---- LOADING OVERLAY ---- */
+.loading-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(26,15,0,0.88);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  backdrop-filter: blur(6px);
+  transition: opacity 0.4s;
+}
+.loading-overlay.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.loading-spinner {
+  width: 48px;
+  height: 48px;
+  border: 3px solid rgba(201,151,62,0.2);
+  border-top-color: var(--gold);
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+  margin-bottom: 1rem;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.loading-text {
+  font-family: var(--font-type);
+  color: var(--gold);
+  opacity: 0.8;
+  font-size: 0.9rem;
+  letter-spacing: 0.2em;
+}
+
+/* ---- RESPONSIVE ---- */
+@media (max-width: 860px) {
+  .reader-body { padding: 3rem 0.5rem 2rem; }
+  .flipbook { height: 420px !important; }
+  .book-spine { width: 12px; }
+}
+
+@media (max-width: 580px) {
+  /* On mobile show single page */
+  .page-left { display: none; }
+  .flipbook {
+    width: 100% !important;
+    max-width: 420px;
+    height: 560px !important;
+    border-radius: 4px;
+  }
+  .page-right { border-radius: 4px; }
+  .book-spine { display: none; }
+  .flip-page { display: none !important; }
+}
